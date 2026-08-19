@@ -27,7 +27,7 @@
                     </a>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#" class="text-gray-900 font-medium hover:text-blue-600">หน้าแรก</a>
+                    <a href="index.php" class="text-blue-600 font-medium">หน้าแรก</a>
                     <a href="catalog.php" class="text-gray-500 hover:text-blue-600">สินค้าทั้งหมด</a>
                 </div>
             </div>
