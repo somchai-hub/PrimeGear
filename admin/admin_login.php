@@ -20,11 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // ตรวจสอบรหัสผ่านที่เข้ารหัสไว้
         if (password_verify($pass_input, $row['password'])) {
             // เข้าสู่ระบบสำเร็จ -> สร้าง Session
-            $_SESSION['admin_id'] = $row['id'];
+            $_SESSION['admin_id'] = $row['Admin_ID'];
             $_SESSION['admin_name'] = $row['username'];
             
             // ส่งไปหน้า Dashboard
-            header("Location: ../dashboard.php");
+            header("Location: dashboard.php");
             exit();
         } else {
             $error_msg = "รหัสผ่านไม่ถูกต้อง";

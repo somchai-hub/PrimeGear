@@ -4,7 +4,7 @@ session_start();
 // ตรวจสอบว่าแอดมินล็อกอินหรือยัง (มี Session หรือไม่)
 // หากยังไม่ได้ล็อกอิน ให้เด้งกลับไปหน้า login
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin/admin_login.php");
+    header("Location: admin_login.php");
     exit();
 }
 
@@ -48,7 +48,7 @@ $admin_name = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin'
             </a>
             
             <!-- Inactive Menus -->
-            <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors">
+            <a href="products.php" class="flex items-center px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors">
                 <i class="fa-solid fa-box w-5 mr-3"></i> จัดการสินค้า (Products)
             </a>
             <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors">

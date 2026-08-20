@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 19, 2026 at 08:40 AM
+-- Generation Time: Aug 20, 2026 at 08:47 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin` (
   `Admin_ID` int NOT NULL,
-  `username` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(80) COLLATE utf8mb4_general_ci NOT NULL
+  `username` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -49,9 +49,9 @@ INSERT INTO `admin` (`Admin_ID`, `username`, `email`, `password`) VALUES
 
 CREATE TABLE `devices` (
   `Device_ID` int NOT NULL,
-  `Brand` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `Model_Name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `Type` varchar(30) COLLATE utf8mb4_general_ci NOT NULL
+  `Brand` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Model_Name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -62,19 +62,21 @@ CREATE TABLE `devices` (
 
 CREATE TABLE `products` (
   `Product_ID` int NOT NULL,
-  `Name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `Image` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `Brand` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `Description` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `Catagory` varchar(30) COLLATE utf8mb4_general_ci NOT NULL
+  `Name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Brand` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Catagory` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Price` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`Product_ID`, `Name`, `Image`, `Brand`, `Description`, `Catagory`) VALUES
-(1, 'Armor Case Pro', 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', 'None', 'เคสใสกันกระแทกยอดนิยม รองรับชาร์จไร้สายแม่เหล็ก ขอบยาง TPU ยืดหยุ่นสูง ป้องกันการตกกระแทกได้ถึง 3 เมตร', 'เคสกันกระแทก');
+INSERT INTO `products` (`Product_ID`, `Name`, `Image`, `Brand`, `Description`, `Catagory`, `Price`) VALUES
+(1, 'Armor Case Pro', 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', 'None', 'เคสใสกันกระแทกยอดนิยม รองรับชาร์จไร้สายแม่เหล็ก ขอบยาง TPU ยืดหยุ่นสูง ป้องกันการตกกระแทกได้ถึง 3 เมตร', 'เคส', 890),
+(2, 'afasf', 'https://google.com', 'fa', 'vvxzv', 'สายชาร์จ', 4545);
 
 -- --------------------------------------------------------
 
@@ -84,9 +86,9 @@ INSERT INTO `products` (`Product_ID`, `Name`, `Image`, `Brand`, `Description`, `
 
 CREATE TABLE `variants` (
   `Variant_ID` int NOT NULL,
-  `Color` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `Length` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `Wattage` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `Color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Length` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Wattage` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `Price` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -138,7 +140,7 @@ ALTER TABLE `devices`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `Product_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Product_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `variants`
