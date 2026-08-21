@@ -31,9 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_type'])) {
     } elseif ($_POST['action_type'] == 'edit') {
         // --- แก้ไขสินค้า (UPDATE) ---
         $id = $_POST['product_id'];
-        $stmt = $conn->prepare("UPDATE products SET Product_ID=?, Name=?, Catagory=?, Price=?, Description=?, Image=?, Brand=? WHERE Product_ID=?");
-        // sssdisi = string, string, string, double, int, string, int
-        $stmt->bind_param("sssdsss", $code, $name, $category, $price, $desc, $image, $brand);
+        $stmt = $conn->prepare("UPDATE products SET product_code=?, Name=?, Catagory=?, Price=?, Description=?, Image=?, Brand=? WHERE Product_ID=?");
+        $stmt->bind_param("sssdsssi", $code, $name, $category, $price, $desc, $image, $brand, $id);
         $stmt->execute();
         $stmt->close();
     }
@@ -135,7 +134,7 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-3">
                                         <p class="font-bold text-gray-900"><?php echo htmlspecialchars($row['Name']); ?></p>
-                                        <p class="text-xs text-gray-500">ID: <?php echo htmlspecialchars($row['Product_ID']); ?></p>
+                                        <p class="text-xs text-gray-500">Code: <?php echo htmlspecialchars($row['product_code']); ?></p>
                                     </td>
                                     <td class="px-6 py-3"><?php echo htmlspecialchars($row['Catagory']); ?></td>
                                     <td class="px-6 py-3 font-medium text-gray-900"><?php echo number_format($row['Price'], 2); ?></td>
@@ -143,7 +142,7 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
                                         <!-- ปุ่มแก้ไข (แนบข้อมูลทั้งหมดไปกับ JavaScript Function) -->
                                         <button onclick="openEditModal(
                                             <?php echo $row['Product_ID']; ?>,
-                                            '<?php echo htmlspecialchars($row['Product_ID'], ENT_QUOTES); ?>',
+                                            '<?php echo htmlspecialchars($row['product_code'], ENT_QUOTES); ?>',
                                             '<?php echo htmlspecialchars($row['Name'], ENT_QUOTES); ?>',
                                             '<?php echo htmlspecialchars($row['Catagory'], ENT_QUOTES); ?>',
                                             <?php echo $row['Price']; ?>,

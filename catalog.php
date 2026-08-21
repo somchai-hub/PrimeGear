@@ -1,3 +1,8 @@
+<?php
+require 'process/client.php'; 
+$sql = "SELECT * FROM products ORDER BY Product_ID DESC";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -108,7 +113,7 @@
             
             <!-- Sorting & Results count -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <p class="text-gray-600 mb-4 sm:mb-0">แสดงผล <span class="font-bold text-gray-900" id="product-count">0</span> รายการ</p>
+                <p class="text-gray-600 mb-4 sm:mb-0">แสดงผล <span class="font-bold text-gray-900"><?php echo $result->num_rows; ?></span> รายการ</p>
                 <div class="flex items-center space-x-2">
                     <label for="sort" class="text-sm text-gray-600">เรียงตาม:</label>
                     <select id="sort" class="border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:border-blue-500">
@@ -119,10 +124,52 @@
                     </select>
                 </div>
             </div>
+             <!-- Grid แสดงสินค้า -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <?php if ($result->num_rows > 0): ?>
+                <!-- วนลูปแสดงสินค้าทีละชิ้น -->
+                    <?php while($row = $result->fetch_assoc()): ?>
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100 flex flex-col">
+                        
+                        <!-- รูปภาพสินค้า -->
+                        <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200">
+                            <?php 
+                            // เช็คว่ามีรูปหรือไม่ ถ้าไม่มีให้ใช้รูป Default
+                            $imagePath = !empty($row['Image']) ? $row['Image'] : 'https://via.placeholder.com/300x300?text=No+Image'; 
+                            ?>
+                            <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($row['Name']); ?>" class="w-full h-48 object-cover object-center group-hover:opacity-75">
+                        </div>
 
-            <!-- Grid Container สำหรับใส่สินค้า (ดึงข้อมูลด้วย JS) -->
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- สินค้าจะถูกสร้างขึ้นที่นี่ด้วย JavaScript -->
+                        <!-- รายละเอียดสินค้า -->
+                        <div class="p-4 flex flex-col flex-1">
+                            <span class="text-xs font-semibold text-blue-500 mb-1 tracking-wide uppercase">
+                                <?php echo htmlspecialchars($row['Catagory']); ?>
+                            </span>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
+                                <?php echo htmlspecialchars($row['Name']); ?>
+                            </h3>
+                            <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">
+                                <?php echo htmlspecialchars($row['Description']); ?>
+                            </p>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                                <span class="text-lg font-bold text-gray-900">
+                                    ฿<?php echo number_format($row['Price'], 2); ?>
+                                </span>
+                            </div>
+                            <a href="detail.php?id=<?php echo $row['Product_ID']; ?>" class="w-full block text-center bg-blue-50 text-blue-600 border border-blue-200 font-semibold py-2 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300">
+                                ดูรายละเอียด
+                            </a>
+                        </div>
+                    </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                <!-- กรณีไม่มีข้อมูลในตาราง -->
+                <div class="col-span-full text-center py-12">
+                    <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500">ยังไม่มีสินค้าในระบบขณะนี้</p>
+                </div>
+                <?php endif; ?>
             </div>
 
             <!-- Pagination -->
@@ -140,49 +187,6 @@
                 </nav>
             </div>
         </main>
-
     </div>
-
-    <!-- Script แสดงข้อมูลสินค้า -->
-    <script>
-        // ข้อมูลจำลองของสินค้าทั้งหมด
-        const products = [
-            { id: "armor-case", name: "Armor Case Pro", category: "เคสกันกระแทก", price: 890, image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
-            { id: "gan-charger", name: "GaN Ultra 65W", category: "หัวชาร์จ", price: 1290, image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
-            { id: "tough-cable", name: "Tough Braided C to C", category: "สายชาร์จ", price: 590, image: "https://images.unsplash.com/photo-1598285521990-eb9741a6b0c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
-            { id: "powerbank-10k", name: "Magnetic PowerBank 10000mAh", category: "พาวเวอร์แบงค์", price: 1590, image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
-            { id: "air-buds", name: "True Wireless AirBuds Pro", category: "หูฟัง", price: 1990, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" },
-            { id: "screen-guard", name: "Privacy Glass Protector", category: "ฟิล์มกันรอย", price: 350, image: "https://images.unsplash.com/photo-1541805562137-b3e34b9d520d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" }
-        ];
-
-        // อัปเดตจำนวนรายการสินค้า
-        document.getElementById('product-count').innerText = products.length;
-
-        // ฟังก์ชันสร้าง Card สินค้าและนำไปใส่ใน Grid
-        const grid = document.getElementById('product-grid');
-        
-        products.forEach(product => {
-            // สร้าง HTML สำหรับสินค้าแต่ละชิ้น
-            const cardHTML = `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                    <div class="h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
-                        <img src="${product.image}" alt="${product.name}" class="object-cover h-full w-full hover:scale-105 transition-transform duration-300">
-                    </div>
-                    <div class="p-5 flex flex-col flex-1">
-                        <span class="text-xs font-semibold text-blue-600 mb-1 uppercase tracking-wider">${product.category}</span>
-                        <h3 class="text-lg font-bold text-gray-900 mb-2 leading-tight">${product.name}</h3>
-                        <p class="text-xl font-bold text-gray-900 mt-auto mb-4">฿ ${product.price.toLocaleString()}</p>
-                        
-                        <!-- ลิงก์ไปยังหน้า Product Detail พร้อมแนบ ID -->
-                        <a href="product-detail.html?id=${product.id}" class="w-full block text-center bg-blue-50 text-blue-600 border border-blue-200 font-semibold py-2 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300">
-                            ดูรายละเอียด
-                        </a>
-                    </div>
-                </div>
-            `;
-            // เพิ่มเข้าไปใน Grid
-            grid.innerHTML += cardHTML;
-        });
-    </script>
 </body>
 </html>
