@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 20, 2026 at 08:47 AM
+-- Generation Time: Aug 21, 2026 at 08:29 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -62,6 +62,7 @@ CREATE TABLE `devices` (
 
 CREATE TABLE `products` (
   `Product_ID` int NOT NULL,
+  `product_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `Name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `Image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `Brand` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -74,9 +75,9 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`Product_ID`, `Name`, `Image`, `Brand`, `Description`, `Catagory`, `Price`) VALUES
-(1, 'Armor Case Pro', 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', 'None', 'เคสใสกันกระแทกยอดนิยม รองรับชาร์จไร้สายแม่เหล็ก ขอบยาง TPU ยืดหยุ่นสูง ป้องกันการตกกระแทกได้ถึง 3 เมตร', 'เคส', 890),
-(2, 'afasf', 'https://google.com', 'fa', 'vvxzv', 'สายชาร์จ', 4545);
+INSERT INTO `products` (`Product_ID`, `product_code`, `Name`, `Image`, `Brand`, `Description`, `Catagory`, `Price`) VALUES
+(1, 'PCK-1', 'Armor Case Pro', 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'None', 'เคสใสกันกระแทกยอดนิยม รองรับชาร์จไร้สายแม่เหล็ก ขอบยาง TPU ยืดหยุ่นสูง ป้องกันการตกกระแทกได้ถึง 3 เมตร', 'เคส', 890),
+(2, 'PCK-2', 'GaN Ultra 65W', 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'None', 'หัวชาร์จเทคโนโลยี GaN ขนาดเล็กพกพาง่าย จ่ายไฟสูงสุด 65W ชาร์จ MacBook หรือสมาร์ตโฟนได้อย่างรวดเร็ว ไม่ร้อน', 'หัวชาร์จ', 1290);
 
 -- --------------------------------------------------------
 
