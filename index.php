@@ -1,3 +1,9 @@
+<?php
+require 'process/client.php'; 
+
+$sql = "SELECT * FROM products ORDER BY Product_ID DESC LIMIT 3";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -69,56 +75,36 @@
     <!-- Product Catalog (จำลองหน้ารายการสินค้า) -->
     <div id="catalog" class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-bold text-center mb-10">สินค้าแนะนำ</h2>
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Product 1 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <img src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Phone Case" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="text-xs font-semibold text-blue-600 mb-1">เคสกันกระแทก</div>
-                    <h3 class="text-xl font-bold mb-2">Armor Case Pro</h3>
-                    <p class="text-gray-600 mb-4 text-sm">เคสใสกันกระแทกยอดนิยม รองรับชาร์จไร้สายแม่เหล็ก</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-gray-900">฿ 890</span>
-                        <!-- เปลี่ยนจาก Add to Cart เป็น เช็คสต็อกสาขา ตาม Requirement -->
-                        <a href="detail.php?id=armor-case" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300">
-                            ดูรายละเอียด <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
-                        </a>
+            <?php if ($result && $result->num_rows > 0): ?>
+                <?php while($row = $result->fetch_assoc()): ?>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 flex flex-col">
+                        <?php
+                        $imagePath = !empty($row['Image']) ? $row['Image'] : 'https://via.placeholder.com/500x500?text=No+Image';
+                        ?>
+                        <div class="w-full h-48 bg-gray-50 flex items-center justify-center p-3 overflow-hidden">
+                            <img src="<?php echo htmlspecialchars($imagePath);?>" alt="<?php echo htmlspecialchars($row['Name'])?>" class="max-w-full max-h-full object-contain">
+                        </div>
+                        <div class="p-6 flex flex-col flex-1">
+                            <div class="text-xs font-semibold text-blue-600 mb-1"><?php echo htmlspecialchars($row['Catagory'])?></div>
+                            <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($row['Name'])?></h3>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2"><?php echo htmlspecialchars($row['Description'])?></p>
+                            <div class="flex justify-between items-center mt-auto">
+                                <span class="text-lg font-bold text-gray-900">฿<?php echo htmlspecialchars($row['Price'])?></span>
+                                <a href="detail.php?id=<?php echo $row['Product_ID'];?>" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300">
+                                ดูรายละเอียด <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
+                <?php endwhile;?>
+            <?php else:?>
+                <!-- กรณีไม่มีสินค้า -->
+                <div class="col-span-1 md:col-span-3 text-center py-10 text-gray-500">
+                    <i class="fa-solid fa-box-open text-4xl mb-3 text-gray-300"></i>
+                    <p>ยังไม่มีสินค้าแนะนำในระบบขณะนี้</p>
                 </div>
-            </div>
-
-            <!-- Product 2 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <img src="https://images.unsplash.com/photo-1583863788434-e58a36330cf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Charger" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="text-xs font-semibold text-blue-600 mb-1">หัวชาร์จเร็ว (Adapter)</div>
-                    <h3 class="text-xl font-bold mb-2">GaN Ultra 65W</h3>
-                    <p class="text-gray-600 mb-4 text-sm">หัวชาร์จเทคโนโลยี GaN ขนาดเล็ก จ่ายไฟสูงสุด 65W</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-gray-900">฿ 1,290</span>
-                        <a href="detail.php?id=gan-charger" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300">
-                            ดูรายละเอียด <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <img src="https://images.unsplash.com/photo-1598285521990-eb9741a6b0c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Cable" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="text-xs font-semibold text-blue-600 mb-1">สายชาร์จ (Cable)</div>
-                    <h3 class="text-xl font-bold mb-2">Tough Braided C to C</h3>
-                    <p class="text-gray-600 mb-4 text-sm">สายถักไนลอนทนทานพิเศษ ความยาว 1.5 เมตร (100W)</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-gray-900">฿ 590</span>
-                        <a href="detail.php?id=tough-cable" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300">
-                            ดูรายละเอียด <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <?php endif;?>
         </div>
     </div>
 

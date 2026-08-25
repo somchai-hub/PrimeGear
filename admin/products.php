@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_type'])) {
     
     if ($_POST['action_type'] == 'add') {
         // --- เพิ่มสินค้าใหม่ (INSERT) ---
-        $stmt = $conn->prepare("INSERT INTO products (Product_ID, Name, Catagory, Price, Description, Image, Brand) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO products (product_code, Name, Catagory, Price, Description, Image, Brand) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssdsss", $code, $name, $category, $price, $desc, $image, $brand);
         $stmt->execute();
         $stmt->close();
@@ -56,9 +56,24 @@ if (isset($_GET['delete_id'])) {
 }
 
 // ---------------------------------------------------------
-// 3. ดึงข้อมูลสินค้าทั้งหมดมาแสดง
+// 3. ดึงข้อมูลสินค้ามาแสดง (เพิ่มระบบค้นหา)
 // ---------------------------------------------------------
-$result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
+$search_query = "";
+// ตรวจสอบว่ามีการค้นหาหรือไม่
+if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
+    $search_query = trim($_GET['search']);
+    // ค้นหาจาก ชื่อสินค้า (Name) หรือ รหัสสินค้า (product_code)
+    $stmt = $conn->prepare("SELECT * FROM products WHERE Name LIKE ? OR product_code LIKE ? ORDER BY Product_ID DESC");
+    $search_param = "%" . $search_query . "%";
+    $stmt->bind_param("ss", $search_param, $search_param);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+} else {
+    // ถ้าไม่มีการค้นหา ให้ดึงข้อมูลทั้งหมดตามปกติ
+    $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
+}
+//$result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
 ?>
 
 <!DOCTYPE html>
@@ -107,7 +122,7 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
         <main class="flex-1 overflow-y-auto p-8">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                 <div class="relative w-full sm:w-96">
-                    <input type="text" placeholder="ค้นหาสินค้า..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <input type="text" placeholder="ค้นหาสินค้า..." id="liveSearch" onkeyup="filterProducts()" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
                 </div>
                 <!-- เปลี่ยนไปเรียก openAddModal() แทน -->
@@ -202,7 +217,7 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">แบรน์ด</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">แบรนด์</label>
                             <input type="text" name="brand" id="input_brand" required class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
@@ -211,6 +226,7 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
                                 <option value="เคส">เคส</option>
                                 <option value="สายชาร์จ">สายชาร์จ</option>
                                 <option value="หัวชาร์จ">หัวชาร์จ</option>
+                                <option value="พาวเวอร์แบงค์">พาวเวอร์แบงค์</option>
                             </select>
                         </div>
                         <div>
@@ -283,6 +299,32 @@ $result = $conn->query("SELECT * FROM products ORDER BY Product_ID DESC");
                 window.location.href = `products.php?delete_id=${id}`;
             }
         }
+        function filterProducts() {
+        // 1. รับข้อความที่พิมพ์และแปลงเป็นตัวพิมพ์เล็ก
+        let input = document.getElementById("liveSearch").value.toLowerCase();
+        
+        // 2. ดึงข้อมูลแถว (tr) ทั้งหมดในตาราง เฉพาะส่วน tbody
+        let tbody = document.querySelector("tbody");
+        let tr = tbody.getElementsByTagName("tr");
+
+        // 3. วนลูปเช็คข้อมูลทีละแถว
+        for (let i = 0; i < tr.length; i++) {
+            // ดึงข้อมูลจากคอลัมน์แรก (คอลัมน์ที่มี รหัส / ชื่อสินค้า)
+            let td = tr[i].getElementsByTagName("td")[0]; 
+            
+            if (td) {
+                // อ่านข้อความในคอลัมน์นั้น
+                let textValue = td.textContent || td.innerText;
+                
+                // เช็คว่ามีคำที่พิมพ์อยู่ในข้อความนั้นหรือไม่
+                if (textValue.toLowerCase().indexOf(input) > -1) {
+                    tr[i].style.display = ""; // ถ้ามี ให้แสดงแถวนี้ไว้
+                } else {
+                    tr[i].style.display = "none"; // ถ้าไม่มี ให้ซ่อนแถวนี้
+                }
+            }
+        }
+    }
     </script>
 </body>
 </html>

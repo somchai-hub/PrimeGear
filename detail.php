@@ -96,7 +96,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     </div>
                     
                     <div class="flex space-x-4 mt-auto">
-                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-lg shadow-blue-200 flex justify-center items-center">ย้อนกลับ</button>
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-lg shadow-blue-200 flex justify-center items-center">
+                            ย้อนกลับ
+                        </button>
                     </div>
                 </div>
             </div>
