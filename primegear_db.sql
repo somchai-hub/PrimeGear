@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 25, 2026 at 08:32 AM
+-- Generation Time: Sep 01, 2026 at 08:55 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -59,7 +59,24 @@ CREATE TABLE `devices` (
 --
 
 INSERT INTO `devices` (`Device_ID`, `Brand`, `Model_Name`, `Type`) VALUES
-(1, 'Apple', 'iPhone 17 Pro Max', 'Smart Phone');
+(1, 'Apple', 'iPhone 17 Pro Max', 'SmartPhone'),
+(2, 'Apple', 'iPhone 17 Pro', 'SmartPhone'),
+(3, 'Samsung', 'S24 Ultra', 'SmartPhone'),
+(4, 'Samsung', 'S25 Ultra', 'SmartPhone'),
+(5, 'Vivo', 'X300 Pro', 'SmartPhone'),
+(6, 'Vivo', 'X200 Pro', 'SmartPhone');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pdm`
+--
+
+CREATE TABLE `pdm` (
+  `mapping_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `device_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -91,7 +108,19 @@ INSERT INTO `products` (`Product_ID`, `product_code`, `Name`, `Image`, `Brand`, 
 (6, 'PCK-6', 'Anker Nano PowerBank 10K (PD | PPS | QC | 45W) - Green', 'https://www.425degree.com/media/catalog/product/cache/76f48791e4b0a6cf07f7f7957767c58a/a/n/anker_anker_nano_powerbank_10k_green_1.png', 'ANKER', 'Nano Power Bank 10K 45W แบตสำรองขนาดกะทัดรัด ความจุแบตเตอรี่ 10,000mAh พร้อมหน้าจอสุดล้ำและสายชาร์จในตัว จากแบรนด์ผู้เชี่ยวชาญด้านอุปกรณ์ชาร์จโทรศัพท์มือถืออย่าง Anker', 'พาวเวอร์แบงค์', 1999),
 (7, 'PCK-7', 'Commy PB-B001 10000mAh PowerBank (PD | 22.5W) - Cream', 'https://www.425degree.com/media/catalog/product/cache/76f48791e4b0a6cf07f7f7957767c58a/c/o/commy_commy_pb_b001_10000_mah_powerbank_cream_1.png', 'COMMY', 'Commy PB-B001 10000 mAh Power Bank แบตสำรองดีไซน์เท่ ขนาดกะทัดรัด พร้อมสายชาร์จที่ทำหน้าที่เป็นสายคล้องในตัว จากแบรนด์ผู้เชี่ยวชาญด้านแบตเตอรี่อย่าง Commy', 'พาวเวอร์แบงค์', 890),
 (8, 'PCK-8', 'Anker 25K PowerBank (PD | QC | 165W) - Silver', 'https://www.425degree.com/media/catalog/product/cache/76f48791e4b0a6cf07f7f7957767c58a/a/n/anker_anker_25k_powerbank_pd_qc_165w_silver_12.png', 'ANKER', '25K Power Bank 165W แบตสำรองฟังก์ชันล้ำ ทรงแท่ง ความจุแบตเตอรี่สูง 25,000mAh พร้อมหน้าจอสุดล้ำและสายชาร์จคู่ในตัว จากแบรนด์ผู้เชี่ยวชาญด้านอุปกรณ์ชาร์จโทรศัพท์มือถืออย่าง Anker', 'พาวเวอร์แบงค์', 3799),
-(9, 'PCK-9', 'AlphaX ALC-GaN USB-C Adapter (1USB-C | PD | PPS | GaN | 33W) - Gray', 'https://www.425degree.com/media/catalog/product/cache/76f48791e4b0a6cf07f7f7957767c58a/a/l/alphax_alphax_alc_gan_33w_9.png', 'ALPHAX', 'ALC-GAN33W หัวชาร์จเร็วขนาดเล็ก ทรงลูกบาศก์ ดีไซน์มีเอกลักษณ์ พกพาง่าย จากแบรนด์ AlphaX\\nมาพร้อมช่อง USB-C จำนวน 1 ช่อง จ่ายไฟสูงสุดที่ 33W มาตรฐาน PD, PPS', 'หัวชาร์จ', 590);
+(9, 'PCK-9', 'AlphaX ALC-GaN USB-C Adapter (1USB-C | PD | PPS | GaN | 33W) - Gray', 'https://www.425degree.com/media/catalog/product/cache/76f48791e4b0a6cf07f7f7957767c58a/a/l/alphax_alphax_alc_gan_33w_9.png', 'ALPHAX', 'ALC-GAN33W หัวชาร์จเร็วขนาดเล็ก ทรงลูกบาศก์ ดีไซน์มีเอกลักษณ์ พกพาง่าย จากแบรนด์ AlphaX\\nมาพร้อมช่อง USB-C จำนวน 1 ช่อง จ่ายไฟสูงสุดที่ 33W มาตรฐาน PD, PPS', 'หัวชาร์จ', 590),
+(10, 'PCK-10', 'เคสผ้า TechWoven พร้อม MagSafe สำหรับ iPhone 17 Pro Max - สีเขียว', 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MGFD4?wid=1144&hei=1144&fmt=jpeg&qlt=90&.v=alYrcXl2ZXZVTWFJclVqTWcyZFZ1Z2tuVHYzMERCZURia3c5SzJFOTlPZ3JTRTZ5Yi94UDBnUUhiU2ZvQ2ZITkNWMTErZWdaS0Fwa3k5K2Y1YmtzM3c', 'Apple', 'เคสผ้า TechWoven พร้อม MagSafe ได้รับการออกแบบโดย Apple เพื่อปกป้องและทำให้ iPhone 17 Pro Max เป็นสไตล์ของคุณอย่างสวยงาม', 'เคส', 2390);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_device_mapping`
+--
+
+CREATE TABLE `product_device_mapping` (
+  `product_id` int NOT NULL,
+  `device_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -124,10 +153,23 @@ ALTER TABLE `devices`
   ADD PRIMARY KEY (`Device_ID`);
 
 --
+-- Indexes for table `pdm`
+--
+ALTER TABLE `pdm`
+  ADD PRIMARY KEY (`mapping_id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`Product_ID`);
+
+--
+-- Indexes for table `product_device_mapping`
+--
+ALTER TABLE `product_device_mapping`
+  ADD PRIMARY KEY (`product_id`,`device_id`),
+  ADD KEY `device_id` (`device_id`);
 
 --
 -- Indexes for table `variants`
@@ -149,19 +191,30 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `devices`
 --
 ALTER TABLE `devices`
-  MODIFY `Device_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Device_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `Product_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `Product_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `variants`
 --
 ALTER TABLE `variants`
   MODIFY `Variant_ID` int NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `product_device_mapping`
+--
+ALTER TABLE `product_device_mapping`
+  ADD CONSTRAINT `product_device_mapping_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`Product_ID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_device_mapping_ibfk_2` FOREIGN KEY (`device_id`) REFERENCES `devices` (`Device_ID`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
