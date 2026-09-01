@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['admin_name'] = $row['username'];
             
             // ส่งไปหน้า Dashboard
-            header("Location: dashboard.php");
+            header("Location: products.php");
             exit();
         } else {
             $error_msg = "รหัสผ่านไม่ถูกต้อง";

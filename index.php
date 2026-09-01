@@ -47,28 +47,30 @@ $result = $conn->query($sql);
             <p class="text-xl mb-8 text-blue-100">ไม่ต้องกลัวซื้อผิดรุ่น! เลือกรุ่นมือถือหรือแท็บเล็ตของคุณเพื่อดูสินค้าที่รองรับ</p>
             
             <!-- กล่องค้นหา (Search Box) -->
-            <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 justify-center items-end">
+            <form action="catalog.php" method="GET" class="bg-white p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 justify-center items-end">
                 <div class="w-full md:w-1/3 text-left">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="brand">1. เลือกแบรนด์</label>
-                    <select id="brand" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" onchange="updateModels()">
+                    <!-- เปลี่ยน name เป็น brands[] เพื่อให้สอดคล้องกับตัวกรองใน catalog.php -->
+                    <select name="brands[]" id="brand" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" onchange="updateModels()">
                         <option value="">-- กรุณาเลือกแบรนด์ --</option>
-                        <option value="apple">Apple</option>
-                        <option value="samsung">Samsung</option>
-                        <option value="vivo">Vivo</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Vivo">Vivo</option>
                     </select>
                 </div>
                 <div class="w-full md:w-1/3 text-left">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="model">2. เลือกรุ่น</label>
-                    <select id="model" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" disabled>
+                    <select name="model" id="model" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" disabled>
                         <option value="">-- กรุณาเลือกแบรนด์ก่อน --</option>
                     </select>
                 </div>
                 <div class="w-full md:w-1/4">
-                    <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-md transition duration-300" onclick="searchProducts()">
-                        ค้นหาสินค้า <i class="fa-solid fa-magnifying-glass ml-2"></i>
+                <!-- เปลี่ยนจากปุ่มธรรมดาเป็นปุ่ม Submit -->
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+                    ค้นหาสินค้า <i class="fa-solid fa-magnifying-glass ml-2"></i>
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -90,7 +92,7 @@ $result = $conn->query($sql);
                             <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($row['Name'])?></h3>
                             <p class="text-gray-600 mb-4 text-sm line-clamp-2"><?php echo htmlspecialchars($row['Description'])?></p>
                             <div class="flex justify-between items-center mt-auto">
-                                <span class="text-lg font-bold text-gray-900">฿<?php echo htmlspecialchars($row['Price'])?></span>
+                                <span class="text-lg font-bold text-gray-900">฿<?php echo number_format($row['Price'], 2)?></span>
                                 <a href="detail.php?id=<?php echo $row['Product_ID'];?>" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300">
                                 ดูรายละเอียด <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
                                 </a>
@@ -123,68 +125,39 @@ $result = $conn->query($sql);
     <footer class="bg-gray-900 text-gray-400 py-8 text-center">
         <p>&copy; 2026 PrimeGear IT Accessories. All rights reserved.</p>
     </footer>
-
-    <!-- JavaScript สำหรับระบบค้นหาตามอุปกรณ์ -->
     <script>
-        // ข้อมูลจำลอง (Mock Data) สำหรับรุ่นมือถือ
-        const deviceData = {
-            apple: [
-                { id: 'ip17pm', name: 'iPhone 17 Pro Max' },
-                { id: 'ip17p', name: 'iPhone 17 Pro' },
-                { id: 'ip17', name: 'iPhone 17' },
-                { id: 'ip16pm', name: 'iPhone 16 Pro Max' },
-                { id: 'ip16p', name: 'iPhone 16 Pro' },
-                { id: 'ip16', name: 'iPhone 16' },
-                { id: 'ip15pm', name: 'iPhone 15 Pro Max' },
-                { id: 'ip15p', name: 'iPhone 15 Pro' },
-                { id: 'ip15', name: 'iPhone 15' }
-            ],
-            samsung: [
-                { id: 's24u', name: 'Galaxy S24 Ultra' },
-                { id: 's23u', name: 'Galaxy S23 Ultra' },
-                { id: 'zfold5', name: 'Galaxy Z Fold 5' }
-            ],
-            vivo: [
-                { id: 'vx300p', name: 'X 300 Pro' },
-                { id: 'vx200p', name: 'X 200 Pro' }
-            ]
-        };
+    // ฐานข้อมูลรุ่นมือถือจำลอง (สามารถปรับแก้รายชื่อรุ่นได้ตามต้องการ)
+    const deviceModels = {
+        'Apple': ['iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15', 'iPad Pro'],
+        'Samsung': ['Galaxy S24 Ultra', 'Galaxy S24+', 'Galaxy S24', 'Galaxy Z Fold 5'],
+        'Vivo': ['X100 Pro', 'X100', 'V30 Pro']
+    };
 
-        function updateModels() {
-            const brandSelect = document.getElementById('brand');
-            const modelSelect = document.getElementById('model');
-            const selectedBrand = brandSelect.value;
+    function updateModels() {
+        const brandSelect = document.getElementById('brand');
+        const modelSelect = document.getElementById('model');
+        const selectedBrand = brandSelect.value;
 
-            // เคลียร์ค่าเก่า
-            modelSelect.innerHTML = '<option value="">-- เลือกรุ่น --</option>';
+        // ล้างค่าตัวเลือกเดิม
+        modelSelect.innerHTML = '<option value="">-- เลือกรุ่น --</option>';
 
-            if (selectedBrand && deviceData[selectedBrand]) {
-                modelSelect.disabled = false;
-                // เพิ่มตัวเลือกรุ่นใหม่ตามแบรนด์ที่เลือก
-                deviceData[selectedBrand].forEach(function(model) {
-                    const option = document.createElement('option');
-                    option.value = model.id;
-                    option.textContent = model.name;
-                    modelSelect.appendChild(option);
-                });
-            } else {
-                modelSelect.disabled = true;
-                modelSelect.innerHTML = '<option value="">-- กรุณาเลือกแบรนด์ก่อน --</option>';
-            }
-        }
-
-        function searchProducts() {
-            const brand = document.getElementById('brand').value;
-            const model = document.getElementById('model').value;
+        if (selectedBrand && deviceModels[selectedBrand]) {
+            // เปิดให้กดเลือกรุ่นได้
+            modelSelect.disabled = false;
             
-            if(!brand || !model) {
-                alert("กรุณาเลือกแบรนด์และรุ่นก่อนค้นหาสินค้าครับ");
-                return;
-            }
-            
-            const modelName = document.querySelector(`#model option[value="${model}"]`).textContent;
-            alert(`กำลังค้นหาสินค้าที่รองรับ: ${modelName}\n(ในระบบจริงจะนำคุณไปยังหน้ารายการสินค้า)`);
+            // วนลูปสร้างตัวเลือกรุ่นตามแบรนด์ที่เลือก
+            deviceModels[selectedBrand].forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+        } else {
+            // ปิดการเลือกรุ่นหากยังไม่เลือกแบรนด์
+            modelSelect.disabled = true;
+            modelSelect.innerHTML = '<option value="">-- กรุณาเลือกแบรนด์ก่อน --</option>';
         }
-    </script>
+    }
+</script>
 </body>
 </html>
