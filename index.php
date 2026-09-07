@@ -1,8 +1,20 @@
 <?php
 require 'process/client.php'; 
 
-$sql = "SELECT * FROM products ORDER BY Product_ID DESC LIMIT 3";
+$sql = "SELECT * FROM products ORDER BY Product_ID DESC LIMIT 6";
 $result = $conn->query($sql);
+
+$device_sql = "SELECT Brand, Model_Name FROM Devices ORDER BY brand ASC, Model_Name ASC";
+$device_result = $conn->query($device_sql);
+
+$deviceData = [];
+if ($device_result && $device_result->num_rows > 0) {
+    while ($row = $device_result->fetch_assoc()) {
+        $brand = $row['Brand'];
+        // สร้าง Array โดยให้ชื่อแบรนด์เป็น Key และเก็บชื่อรุ่นต่างๆ ไว้ข้างใน
+        $deviceData[$brand][] = $row['Model_Name'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -53,9 +65,11 @@ $result = $conn->query($sql);
                     <!-- เปลี่ยน name เป็น brands[] เพื่อให้สอดคล้องกับตัวกรองใน catalog.php -->
                     <select name="brands[]" id="brand" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" onchange="updateModels()">
                         <option value="">-- กรุณาเลือกแบรนด์ --</option>
-                        <option value="Apple">Apple</option>
-                        <option value="Samsung">Samsung</option>
-                        <option value="Vivo">Vivo</option>
+                        <?php foreach (array_keys($deviceData) as $brand): ?>
+                        <option value="<?php echo htmlspecialchars($brand); ?>">
+                            <?php echo htmlspecialchars($brand); ?>
+                        </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="w-full md:w-1/3 text-left">
@@ -126,12 +140,7 @@ $result = $conn->query($sql);
         <p>&copy; 2026 PrimeGear IT Accessories. All rights reserved.</p>
     </footer>
     <script>
-    // ฐานข้อมูลรุ่นมือถือจำลอง (สามารถปรับแก้รายชื่อรุ่นได้ตามต้องการ)
-    const deviceModels = {
-        'Apple': ['iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15', 'iPad Pro'],
-        'Samsung': ['Galaxy S24 Ultra', 'Galaxy S24+', 'Galaxy S24', 'Galaxy Z Fold 5'],
-        'Vivo': ['X100 Pro', 'X100', 'V30 Pro']
-    };
+    const deviceModels = <?php echo json_encode($deviceData, JSON_UNESCAPED_UNICODE); ?>
 
     function updateModels() {
         const brandSelect = document.getElementById('brand');
