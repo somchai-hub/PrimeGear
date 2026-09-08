@@ -40,14 +40,28 @@ if ($device_result && $device_result->num_rows > 0) {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="#" class="text-2xl font-bold text-blue-600">
+                    <a href="index.php" class="text-2xl font-bold text-blue-600">
                         <i class="fa-solid fa-bolt"></i> PrimeGear
                     </a>
                 </div>
+
                 <div class="hidden md:flex space-x-8">
                     <a href="index.php" class="text-blue-600 font-medium">หน้าแรก</a>
-                    <a href="catalog.php" class="text-gray-500 hover:text-blue-600">สินค้าทั้งหมด</a>
+                    <a href="catalog.php" class="text-gray-500 hover:text-blue-600 transition">สินค้าทั้งหมด</a>
                 </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-blue-600 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-inner">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="index.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50">หน้าแรก</a>
+                <a href="catalog.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50">สินค้าทั้งหมด</a>
             </div>
         </div>
     </nav>
@@ -167,6 +181,22 @@ if ($device_result && $device_result->num_rows > 0) {
             modelSelect.innerHTML = '<option value="">-- กรุณาเลือกแบรนด์ก่อน --</option>';
         }
     }
+
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = this.querySelector('i');
+            
+        menu.classList.toggle('hidden');
+            
+        // เปลี่ยนไอคอน 3 ขีด เป็น กากบาท
+        if (menu.classList.contains('hidden')) {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        } else {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        }
+    });
 </script>
 </body>
 </html>
