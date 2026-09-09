@@ -1,10 +1,10 @@
 <?php
-require 'process/client.php'; 
+require 'includes/connect-db.php'; 
 
 $sql = "SELECT * FROM products ORDER BY Product_ID DESC LIMIT 6";
 $result = $conn->query($sql);
 
-$device_sql = "SELECT Brand, Model_Name FROM Devices ORDER BY brand ASC, Model_Name ASC";
+$device_sql = "SELECT Brand, Model_Name FROM devices ORDER BY Brand ASC, Model_Name ASC";
 $device_result = $conn->query($device_sql);
 
 $deviceData = [];
@@ -32,6 +32,7 @@ if ($device_result && $device_result->num_rows > 0) {
             font-family: 'Prompt', sans-serif;
         }
     </style>
+    <link rel="icon" href="favicon.png">
 </head>
 <body class="bg-gray-50 text-gray-800">
 
@@ -77,7 +78,7 @@ if ($device_result && $device_result->num_rows > 0) {
                 <div class="w-full md:w-1/3 text-left">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="brand">1. เลือกแบรนด์</label>
                     <!-- เปลี่ยน name เป็น brands[] เพื่อให้สอดคล้องกับตัวกรองใน catalog.php -->
-                    <select name="brands[]" id="brand" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" onchange="updateModels()">
+                    <select name="device_brand" id="brand" class="w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:border-blue-500" onchange="updateModels()">
                         <option value="">-- กรุณาเลือกแบรนด์ --</option>
                         <?php foreach (array_keys($deviceData) as $brand): ?>
                         <option value="<?php echo htmlspecialchars($brand); ?>">

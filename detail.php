@@ -1,5 +1,5 @@
 <?php
-require 'process/client.php'; // เชื่อมต่อฐานข้อมูล
+require 'includes/connect-db.php'; // เชื่อมต่อฐานข้อมูล
 
 $product = null;
 $error_message = "";
@@ -35,6 +35,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Prompt', sans-serif; }
     </style>
+    <link rel="icon" href="favicon.png">
 </head>
 <body class="bg-gray-50 text-gray-800">
 

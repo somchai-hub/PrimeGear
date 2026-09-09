@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../process/client.php';
+require '../includes/connect-db.php';
 
 $error_msg = "";
 
@@ -48,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Prompt', sans-serif; }
     </style>
+    <link rel="icon" href="../favicon.png">
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 

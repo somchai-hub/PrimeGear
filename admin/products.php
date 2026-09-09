@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../process/client.php'; 
+require '../includes/connect-db.php'; 
 
 // ตรวจสอบการล็อกอิน
 if (!isset($_SESSION['admin_id'])) {
@@ -88,6 +88,7 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
         body { font-family: 'Prompt', sans-serif; }
         .modal-active { display: flex !important; }
     </style>
+    <link rel="icon" href="../favicon.png">
 </head>
 <body class="bg-gray-100 flex h-screen overflow-hidden text-gray-800">
 

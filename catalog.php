@@ -1,5 +1,5 @@
 <?php
-require 'process/client.php';
+require 'includes/connect-db.php';
 
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'latest';
 $categories = isset($_GET['categories']) ? $_GET['categories'] : [];
@@ -7,20 +7,42 @@ $brands = isset($_GET['brands']) ? $_GET['brands'] : [];
 $min_price = isset($_GET['min_price']) && is_numeric($_GET['min_price']) ? $_GET['min_price'] : '';
 $max_price = isset($_GET['max_price']) && is_numeric($_GET['max_price']) ? $_GET['max_price'] : '';
 
-// สร้างเงื่อนไข WHERE สำหรับกรองข้อมูล
-$where = [];
+$device_brand = isset($_GET['device_brand']) ? trim($_GET['device_brand']) : '';
+$model = isset($_GET['model']) ? trim($_GET['model']) : '';
+
+// 1. กรองตามรุ่นอุปกรณ์ (ค้นหาจากหน้าแรก)
+if (!empty($model)) {
+    $model_escaped = $conn->real_escape_string($model);
+    $where[] = "(Product_ID IN (
+        SELECT m.product_id 
+        FROM product_device_mapping m 
+        JOIN devices d ON m.device_id = d.Device_ID
+        WHERE d.Model_Name = '$model_escaped'
+    ) OR Catagory = 'Universal')"; // รวมสินค้า Universal (ถ้ามี)
+} 
+// 2. ถ้าเลือกรวมเฉพาะแบรนด์อุปกรณ์ (ไม่ได้ระบุรุ่น)
+elseif (!empty($device_brand)) {
+    $d_brand_escaped = $conn->real_escape_string($device_brand);
+    $where[] = "Product_ID IN (
+        SELECT m.product_id
+        FROM product_device_mapping m 
+        JOIN devices d ON m.device_id = d.Device_ID 
+        WHERE d.Brand = '$d_brand_escaped'
+    )";
+}
+
+// 3. กรองตามยี่ห้อของตัวสินค้า (ตัวกรอง Sidebar)
+if (!empty($brands)) {
+    $brand_escaped = array_map(function($item) use ($conn) { return $conn->real_escape_string($item); }, $brands);
+    $brand_list = implode("','", $brand_escaped);
+    $where[] = "Brand IN ('$brand_list')";
+}
 
 if (!empty($categories)) {
     // ป้องกัน SQL Injection สำหรับ Array
     $cat_escaped = array_map(function($item) use ($conn) { return $conn->real_escape_string($item); }, $categories);
     $cat_list = implode("','", $cat_escaped);
     $where[] = "Catagory IN ('$cat_list')"; // คอลัมน์ Catagory[cite: 4]
-}
-
-if (!empty($brands)) {
-    $brand_escaped = array_map(function($item) use ($conn) { return $conn->real_escape_string($item); }, $brands);
-    $brand_list = implode("','", $brand_escaped);
-    $where[] = "Brand IN ('$brand_list')"; // คอลัมน์ Brand
 }
 
 if ($min_price !== '') {
@@ -61,6 +83,7 @@ switch ($sort) {
 }
 
 $sql = "SELECT * FROM products $whereClause $orderBy LIMIT $items_per_page OFFSET $offset";
+//echo "<pre style='background:#fff; padding:10px;'>$sql</pre>";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -77,6 +100,7 @@ $result = $conn->query($sql);
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Prompt', sans-serif; }
     </style>
+    <link rel="icon" href="favicon.png">
 </head>
 <body class="bg-gray-50 text-gray-800">
 
@@ -129,9 +153,17 @@ $result = $conn->query($sql);
         <!-- Sidebar: ตัวกรองสินค้า (Filters) -->
         <aside class="w-full lg:w-1/4 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
             <form id="filterForm" action="catalog.php" method="GET">
+                <?php if (!empty($device_brand)): ?>
+                <input type="hidden" name="device_brand" value="<?php echo htmlspecialchars($device_brand); ?>">
+                <?php endif; ?>
+                <?php if (!empty($model)): ?>
+                <input type="hidden" name="model" value="<?php echo htmlspecialchars($model); ?>">
+                <?php endif; ?>
                 <!-- ซ่อนค่า sort ไว้ เพื่อไม่ให้การเรียงลำดับหายตอนกดกรอง -->
                 <input type="hidden" name="sort" id="form_sort" value="<?php echo htmlspecialchars($sort); ?>">
-
+                <?php if (!empty($model)): ?>
+                <input type="hidden" name="model" value="<?php echo htmlspecialchars($model); ?>">
+                <?php endif; ?>
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-filter mr-2"></i> ตัวกรอง</h2>
                     <a href="catalog.php" class="text-sm text-blue-600 hover:underline">ล้างทั้งหมด</a>
@@ -167,6 +199,9 @@ $result = $conn->query($sql);
                         </label>
                         <label class="flex items-center cursor-pointer hover:text-blue-600">
                             <input type="checkbox" name="brands[]" value="Samsung" <?php echo in_array('Samsung', $brands) ? 'checked' : ''; ?> class="rounded text-blue-600 focus:ring-blue-500 mr-2 w-4 h-4"> Samsung
+                        </label>
+                        <label class="flex items-center cursor-pointer hover:text-blue-600">
+                            <input type="checkbox" name="brands[]" value="Vivo" <?php echo in_array('Vivo', $brands) ? 'checked' : ''; ?> class="rounded text-blue-600 focus:ring-blue-500 mr-2 w-4 h-4"> Vivo
                         </label>
                         <label class="flex items-center cursor-pointer hover:text-blue-600">
                             <input type="checkbox" name="brands[]" value="Universal" <?php echo in_array('Universal', $brands) ? 'checked' : ''; ?> class="rounded text-blue-600 focus:ring-blue-500 mr-2 w-4 h-4"> Universal (ใช้ทั่วไป)
